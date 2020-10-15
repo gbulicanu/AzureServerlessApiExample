@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Microsoft.WindowsAzure.Storage.Table;
+
+using System;
 
 namespace ServerlessFuncs.Models
 {
@@ -23,5 +25,40 @@ namespace ServerlessFuncs.Models
         public bool Completed { get; set; }
 
         public string Description { get; set; }
+    }
+
+    public class TodoTableEntity : TableEntity
+    {
+        public DateTime CreatedTime { get; set; }
+
+        public string Description { get; set; }
+
+        public bool Completed { get; set; }
+    }
+
+    public static class Mappings
+    {
+        public static TodoTableEntity ToTableEntity(this Todo source)
+        {
+            return new TodoTableEntity
+            {
+                PartitionKey = "TODO",
+                RowKey = source.Id,
+                CreatedTime = source.CreatedTime,
+                Completed = source.Completed,
+                Description = source.Description
+            };
+        }
+
+        public static Todo ToTodo(this TodoTableEntity source)
+        {
+            return new Todo
+            {
+                Id = source.PartitionKey,
+                CreatedTime = source.CreatedTime,
+                Completed = source.Completed,
+                Description = source.Description
+            };
+        }
     }
 }

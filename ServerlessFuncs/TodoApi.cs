@@ -124,7 +124,9 @@ namespace ServerlessFuncs
                 return new NotFoundResult();
             }
 
-            return new OkObjectResult(todo);
+            items.Remove(todo);
+
+            return new OkResult();
         }
     }
 }

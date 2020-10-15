@@ -21,4 +21,11 @@ namespace ServerlessFuncs.Models
     {
         public string Description { get; set; }
     }
+
+    public class TodoUpdate
+    {
+        public bool Completed { get; set; }
+
+        public string Description { get; set; }
+    }
 }

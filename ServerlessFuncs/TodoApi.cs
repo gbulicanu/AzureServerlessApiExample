@@ -64,9 +64,38 @@ namespace ServerlessFuncs
             log.LogInformation("Getting todo item with id {0}.", id);
 
             var todo = items.FirstOrDefault(x => x.Id == id);
-            if (todo == null) 
+            if (todo == null)
             {
                 return new NotFoundResult();
+            }
+
+            return new OkObjectResult(todo);
+        }
+
+        [FunctionName("UpdateTodo")]
+        public static async Task<IActionResult> UpdateTodo(
+            [HttpTrigger(
+                AuthorizationLevel.Anonymous,
+                "put",
+                Route = "todo/{id}")]HttpRequest req,
+            ILogger log,
+            string id)
+        {
+            log.LogInformation("Updating todo item with id={0}.", id);
+
+            var todo = items.FirstOrDefault(x => x.Id == id);
+            if (todo == null)
+            {
+                return new NotFoundResult();
+            }
+
+            string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
+            var input = JsonConvert.DeserializeObject<TodoUpdate>(requestBody);
+
+            todo.Completed = input.Completed;
+            if (!string.IsNullOrWhiteSpace(input.Description))
+            {
+                todo.Description = input.Description;
             }
 
             return new OkObjectResult(todo);

@@ -66,6 +66,8 @@ namespace ServerlessFuncs
             var todo = items.FirstOrDefault(x => x.Id == id);
             if (todo == null)
             {
+                log.LogWarning("Todo item with id '{0}' does not exist.", id);
+
                 return new NotFoundResult();
             }
 
@@ -86,6 +88,8 @@ namespace ServerlessFuncs
             var todo = items.FirstOrDefault(x => x.Id == id);
             if (todo == null)
             {
+                log.LogWarning("Todo item with id '{0}' does not exist.", id);
+
                 return new NotFoundResult();
             }
 
@@ -96,6 +100,28 @@ namespace ServerlessFuncs
             if (!string.IsNullOrWhiteSpace(input.Description))
             {
                 todo.Description = input.Description;
+            }
+
+            return new OkObjectResult(todo);
+        }
+
+        [FunctionName("DeleteTodo")]
+        public static IActionResult DeleteTodo(
+            [HttpTrigger(
+                AuthorizationLevel.Anonymous,
+                "delete",
+                Route = "todo/{id}")]HttpRequest req,
+            ILogger log,
+            string id)
+        {
+            log.LogInformation("Deleting todo item with id {0}.", id);
+
+            var todo = items.FirstOrDefault(x => x.Id == id);
+            if (todo == null)
+            {
+                log.LogWarning("Todo item with id '{0}' does not exist.", id);
+
+                return new NotFoundResult();
             }
 
             return new OkObjectResult(todo);

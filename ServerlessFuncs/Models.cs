@@ -1,4 +1,4 @@
-﻿using Microsoft.WindowsAzure.Storage.Table;
+﻿using Microsoft.Azure.Cosmos.Table;
 
 using System;
 
@@ -54,7 +54,7 @@ namespace ServerlessFuncs.Models
         {
             return new Todo
             {
-                Id = source.PartitionKey,
+                Id = source.RowKey,
                 CreatedTime = source.CreatedTime,
                 Completed = source.Completed,
                 Description = source.Description

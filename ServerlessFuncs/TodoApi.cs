@@ -24,6 +24,7 @@ namespace ServerlessFuncs
                 "post",
                 Route = "todo")]HttpRequest req,
             [Table("todos", Connection = "AzureWebJobsStorage")] IAsyncCollector<TodoTableEntity> todoTable,
+            [Queue("todos", Connection = "AzureWebJobsStorage")] IAsyncCollector<Todo> todoQueue,
             ILogger log)
         {
             log.LogInformation("Creating a new todo item.");
@@ -34,6 +35,7 @@ namespace ServerlessFuncs
             var todo = new Todo { Description = input.Description };
 
             await todoTable.AddAsync(todo.ToTableEntity());
+            await todoQueue.AddAsync(todo);
 
             return new OkObjectResult(todo);
         }

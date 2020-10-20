@@ -1,0 +1,8 @@
+.todo-lists ul {
+  list-style: none;
+  padding-inline-start: 0px;
+}
+
+span.completed {
+  text-decoration: line-through;
+}

@@ -1,0 +1,33 @@
+{
+  "$schema": "https://json.schemastore.org/proxies",
+  "proxies": {
+    "proxyHomePage": {
+      "matchCondition": {
+        "methods": [ "GET" ],
+        "route": "/"
+      },
+      "backendUri": "https://storageaccountgbplm97dc.blob.core.windows.net/website/index.html"
+    },
+    "proxyJs": {
+      "matchCondition": {
+        "methods": [ "GET" ],
+        "route": "/script.js"
+      },
+      "backendUri": "https://storageaccountgbplm97dc.blob.core.windows.net/website/script.js"
+    },
+    "proxyCss": {
+      "matchCondition": {
+        "methods": [ "GET" ],
+        "route": "/style.css"
+      },
+      "backendUri": "https://storageaccountgbplm97dc.blob.core.windows.net/website/style.css"
+    },
+    "proxyContent": {
+      "matchCondition": {
+        "methods": [ "GET" ],
+        "route": "/content/{*restOfPath}"
+      },
+      "backendUri": "https://storageaccountgbplm97dc.blob.core.windows.net/website/content/{restOfPath}"
+    }
+  }
+}

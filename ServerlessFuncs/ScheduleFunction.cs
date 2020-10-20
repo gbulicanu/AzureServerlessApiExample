@@ -13,7 +13,7 @@ namespace ServerlessFuncs
     {
         [FunctionName("ScheduleFunction")]
         public static async Task Run(
-            [TimerTrigger("0 */1 * * * *")]TimerInfo myTimer,
+            [TimerTrigger("0 */10 * * * *")]TimerInfo myTimer,
             [Table("todos", Connection = "AzureWebJobsStorage")] CloudTable todoTable,
             ILogger log)
         {

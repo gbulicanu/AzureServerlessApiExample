@@ -104,7 +104,7 @@ namespace ServerlessFuncs
         {
             log.LogInformation("Updating todo item with id={0}.", id);
 
-            string requestBody = await new StreamReader(req.Body)
+            string requestBody = await new StreamReader(request.Body)
                 .ReadToEndAsync();
             var input = JsonConvert.DeserializeObject<TodoUpdate>(requestBody);
 
@@ -153,7 +153,8 @@ namespace ServerlessFuncs
         {
             log.LogInformation("Deleting todo item with id {0}.", id);
 
-            var deleteOperation = TableOperation.Delete(new TableEntity{
+            var deleteOperation = TableOperation.Delete(new TableEntity
+            {
                 PartitionKey = "TODO",
                 RowKey = id,
                 ETag = "*"
@@ -164,7 +165,7 @@ namespace ServerlessFuncs
                 var deleteResult =
                     await todoTable.ExecuteAsync(deleteOperation);
             }
-            catch(StorageException e)
+            catch (StorageException e)
             when (e.RequestInformation.HttpStatusCode == 404)
             {
                 log.LogWarning("Todo item with id '{0}' does not exist.", id);

@@ -15,7 +15,8 @@ az container create \
     --ip-address public \
     --ports 80 443 \
     --dns-name-label gbulicanu-serverlessfuncsv1 \
-    -e AzureWebJobsStorage=$CON_STR WEB_HOST=https://storageaccountgbplm97dc.blob.core.windows.net/website
+    -e AzureWebJobsStorage=$CON_STR \
+        WEB_HOST=https://storageaccountgbplm97dc.blob.core.windows.net/website
 
 
 az container logs \

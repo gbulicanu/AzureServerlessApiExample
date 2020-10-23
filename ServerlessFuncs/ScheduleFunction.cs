@@ -13,12 +13,16 @@ namespace ServerlessFuncs
     {
         [FunctionName("ScheduleFunction")]
         public static async Task Run(
-            [TimerTrigger("0 */10 * * * *")]TimerInfo myTimer,
-            [Table("todos", Connection = "AzureWebJobsStorage")] CloudTable todoTable,
+            [TimerTrigger("0 */10 * * * *")]
+            TimerInfo trigger,
+            [Table("todos", Connection = "AzureWebJobsStorage")]
+            CloudTable todoTable,
             ILogger log)
         {
             var query = new TableQuery<TodoTableEntity>();
-            var segment = await todoTable.ExecuteQuerySegmentedAsync(query, null);
+            var segment = await todoTable.ExecuteQuerySegmentedAsync(
+                query,
+                null);
             var deleted = 0;
             foreach (var todo in segment)
             {
@@ -28,7 +32,8 @@ namespace ServerlessFuncs
                     deleted++;
                 }
             }
-            log.LogInformation($"Deleted {deleted} completed todo's at: {DateTime.Now}");
+            log.LogInformation(
+                $"Deleted {deleted} completed todo's at: {DateTime.Now}");
         }
     }
 }

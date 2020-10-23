@@ -12,8 +12,10 @@ namespace ServerlessFuncs
     {
         [FunctionName("QueueListeners")]
         public static async Task Run(
-            [QueueTrigger("todos", Connection = "AzureWebJobsStorage")]Todo todo,
-            [Blob("todos", Connection = "AzureWebJobsStorage")]CloudBlobContainer container,
+            [QueueTrigger("todos", Connection = "AzureWebJobsStorage")]
+            Todo todo,
+            [Blob("todos", Connection = "AzureWebJobsStorage")]
+            CloudBlobContainer container,
             ILogger log)
         {
             await container.CreateIfNotExistsAsync();

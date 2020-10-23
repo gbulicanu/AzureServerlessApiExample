@@ -22,14 +22,17 @@ namespace ServerlessFuncs
             [HttpTrigger(
                 AuthorizationLevel.Anonymous,
                 "post",
-                Route = "todo")]HttpRequest req,
-            [Table("todos", Connection = "AzureWebJobsStorage")] IAsyncCollector<TodoTableEntity> todoTable,
-            [Queue("todos", Connection = "AzureWebJobsStorage")] IAsyncCollector<Todo> todoQueue,
+                Route = "todo")]HttpRequest request,
+            [Table("todos", Connection = "AzureWebJobsStorage")]
+            IAsyncCollector<TodoTableEntity> todoTable,
+            [Queue("todos", Connection = "AzureWebJobsStorage")]
+            IAsyncCollector<Todo> todoQueue,
             ILogger log)
         {
             log.LogInformation("Creating a new todo item.");
 
-            string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
+            string requestBody = await new StreamReader(request.Body)
+                .ReadToEndAsync();
             var input = JsonConvert.DeserializeObject<TodoCreate>(requestBody);
 
             var todo = new Todo { Description = input.Description };
@@ -45,13 +48,17 @@ namespace ServerlessFuncs
             [HttpTrigger(
                 AuthorizationLevel.Anonymous,
                 "get",
-                Route = "todo")]HttpRequest req,
-            [Table("todos", Connection = "AzureWebJobsStorage")] CloudTable todoTable,
+                Route = "todo")]
+            HttpRequest request,
+            [Table("todos", Connection = "AzureWebJobsStorage")]
+            CloudTable todoTable,
             ILogger log)
         {
             log.LogInformation("Getting all todo items.");
             var query = new TableQuery<TodoTableEntity>();
-            var segment = await todoTable.ExecuteQuerySegmentedAsync(query, null);
+            var segment = await todoTable.ExecuteQuerySegmentedAsync(
+                query,
+                null);
 
             return new OkObjectResult(segment.Select(Mappings.ToTodo));
         }
@@ -61,8 +68,13 @@ namespace ServerlessFuncs
             [HttpTrigger(
                 AuthorizationLevel.Anonymous,
                 "get",
-                Route = "todo/{id}")]HttpRequest req,
-            [Table("todos", "TODO", "{id}", Connection = "AzureWebJobsStorage")] TodoTableEntity todo,
+                Route = "todo/{id}")]HttpRequest request,
+            [Table(
+                "todos",
+                "TODO",
+                "{id}",
+                Connection = "AzureWebJobsStorage")]
+            TodoTableEntity todo,
             ILogger log,
             string id)
         {
@@ -83,14 +95,17 @@ namespace ServerlessFuncs
             [HttpTrigger(
                 AuthorizationLevel.Anonymous,
                 "put",
-                Route = "todo/{id}")]HttpRequest req,
-            [Table("todos", Connection = "AzureWebJobsStorage")] CloudTable todoTable,
+                Route = "todo/{id}")]
+            HttpRequest request,
+            [Table("todos", Connection = "AzureWebJobsStorage")]
+            CloudTable todoTable,
             ILogger log,
             string id)
         {
             log.LogInformation("Updating todo item with id={0}.", id);
 
-            string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
+            string requestBody = await new StreamReader(req.Body)
+                .ReadToEndAsync();
             var input = JsonConvert.DeserializeObject<TodoUpdate>(requestBody);
 
             var findOperation = TableOperation.Retrieve(
@@ -129,8 +144,10 @@ namespace ServerlessFuncs
             [HttpTrigger(
                 AuthorizationLevel.Anonymous,
                 "delete",
-                Route = "todo/{id}")]HttpRequest req,
-            [Table("todos", Connection = "AzureWebJobsStorage")] CloudTable todoTable,
+                Route = "todo/{id}")]
+            HttpRequest request,
+            [Table("todos", Connection = "AzureWebJobsStorage")]
+            CloudTable todoTable,
             ILogger log,
             string id)
         {
@@ -144,9 +161,11 @@ namespace ServerlessFuncs
 
             try
             {
-                var deleteResult = await todoTable.ExecuteAsync(deleteOperation);
+                var deleteResult =
+                    await todoTable.ExecuteAsync(deleteOperation);
             }
-            catch(StorageException e) when (e.RequestInformation.HttpStatusCode == 404)
+            catch(StorageException e)
+            when (e.RequestInformation.HttpStatusCode == 404)
             {
                 log.LogWarning("Todo item with id '{0}' does not exist.", id);
 
